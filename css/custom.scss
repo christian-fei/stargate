@@ -19,7 +19,9 @@ $size-flip: 15em;
 	height: $size-flip + 4em; //because of the "Show map" button
 	width: $size-flip;
 	margin: auto;
-	
+
+	backface-visibility: hidden;
+	transform-style: preserve-3d;
 	
 	#flipper {
 		position: relative;

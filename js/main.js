@@ -1,8 +1,9 @@
 var lat = 0,
 	lon = 0,
 	precision = 4,
-	currDirection = 0,
-	stargates = [];
+	currDirection = {},
+	stargates = [],
+	inViewThreshold = 5;
 
 $(document).ready(function() {
 	var $lat = $("#lat"),
@@ -10,7 +11,8 @@ $(document).ready(function() {
 		$geolocationLabel = $("#geolocation-label"),
 		$myLocation = $("#myLocation"),
 		$flipper = $("#flipper"),
-		$showMap = $("#show-map");
+		$showMap = $("#show-map"),
+		$inViewResults = $("#in-view-results");
 
     $(".azimut").knob({
 		"min":  0,
@@ -19,9 +21,8 @@ $(document).ready(function() {
 	});
 
 	function knobRelease(v){
-		console.log( v );
-		currDirection = v / (Math.PI*180);
-		console.log( currDirection );
+		currDirection.degrees = v;
+		currDirection.radians = v * (Math.PI/180);
 		getStargatesInAzimut();
 	}
 
@@ -43,6 +44,7 @@ $(document).ready(function() {
 	}
 
 	function getStargatesInAzimut(){
+		$inViewResults.empty();
 		var stargatesInAzimut = [];
 		for(var i=0,l=stargates.length; i<l; i++){
 			var stargate = stargates[i],
@@ -53,9 +55,16 @@ $(document).ready(function() {
 			var deltaLat = slat - lat,
 				deltaLon = slon - lon;
 
-			var azimuth = Math.atan2(deltaLon,deltaLat);
+			var wicked = Math.atan2(deltaLon,deltaLat);
 
-			console.log( azimuth, currDirection );
+			var azimuth = (wicked > 0 ? wicked : (2*Math.PI + wicked)) * 360 / (2*Math.PI);
+
+			if( azimuth + inViewThreshold > currDirection.degrees && azimuth - inViewThreshold < currDirection.degrees ){
+				var $li = $('<li>'+ name +'</li>');
+				$inViewResults.append( $li );
+				//console.log( name, azimuth/**/, currDirection.degrees/**/ );
+			}else{
+			}
 		}
 		return stargatesInAzimut
 	}
@@ -63,14 +72,14 @@ $(document).ready(function() {
 
 	function getCurrentCoordinates() {
 		if (!navigator.geolocation){
-			$geolocationLabel.removeClass("label-warning").addClass("label-danger");
+			$geolocationLabel.removeClass("label-warning label-danger label-success").addClass("label-danger");
 			return;
 		}
+		navigator.geolocation.watchPosition(success, error, {timeout:3000,maximumAge:0,enableHighAccuracy:true});
 
 		function success(position) {
 			var latitude  = position.coords.latitude;
 			var longitude = position.coords.longitude;
-
 
 			latitude = parseInt(latitude*Math.pow(10, precision))/Math.pow(10, precision);
 			longitude = parseInt(longitude*Math.pow(10, precision))/Math.pow(10, precision);
@@ -81,16 +90,16 @@ $(document).ready(function() {
 			$lat.html(latitude);
 			$lon.html(longitude);
 
-			$geolocationLabel.removeClass("label-warning").addClass("label-success");
+			$geolocationLabel.removeClass("label-warning label-danger label-success").addClass("label-success");
 
 			$myLocation.attr("src", "http://maps.googleapis.com/maps/api/staticmap?center=" + latitude + "," + longitude + "&zoom=13&size=300x300&sensor=false");
 		};
 
 		function error() {
-			$geolocationLabel.removeClass("label-warning").addClass("label-danger");
+			$geolocationLabel.removeClass("label-warning label-danger label-success").addClass("label-danger");
 		};
 
-		navigator.geolocation.getCurrentPosition(success, error);
+		
 	}
 });
 
