@@ -1,0 +1,57 @@
+.limit{
+	max-width: 30em;
+	margin: 0 auto;
+}
+.current-position-container span{
+	display: inline-block;
+	width: 50%;
+	float: left;
+	text-align: center;
+}
+.page-header, .knob-container,.navbar{
+	text-align: center;	
+}
+
+
+$size-map: 20em;
+.knob-container{
+	position: relative;
+	height: $size-map;
+	width: $size-map;
+	margin: auto;
+	
+	
+	#flipper {
+		position: relative;
+		transition: 0.6s;
+		backface-visibility: hidden;
+		perspective: 500;
+		transform-style: preserve-3d;
+		margin: 1em auto;
+	}
+
+	#flipper.flip{
+		transform: rotateY(180deg);
+	}
+
+
+	#flipper > *{
+		height: $size-map;
+		width: $size-map;
+		position: absolute;
+		top: 0;
+		left: 0;
+	}
+	
+	.front,.back{
+		backface-visibility: hidden;
+	}
+	.front{
+		transform: rotateY(-180deg);
+		z-index: 2;
+	}
+
+	img{
+		height: 100%;
+	}
+}

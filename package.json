@@ -1,0 +1,9 @@
+{
+	"devDependencies": {
+		"gulp": "~3.5.0",
+		"gulp-compass": "~1.0.7",
+		"gulp-autoprefixer": "~0.0.6",
+		"gulp-concat": "~2.1.7",
+		"gulp-uglify": "~0.2.1"
+	}
+}
