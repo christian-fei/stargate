@@ -3,6 +3,7 @@ var lat = 0,
 	precision = 4,
 	currDirection = {},
 	stargates = [],
+	useCompass = false,
 	inViewThreshold = 5;
 
 $(document).ready(function() {
@@ -12,11 +13,14 @@ $(document).ready(function() {
 		$myLocation = $("#myLocation"),
 		$flipper = $("#flipper"),
 		$showMap = $("#show-map"),
-		$inViewResults = $("#in-view-results");
+		$inViewResults = $("#in-view-results"),
+		$useCompass = $("#use-compass"),
+		$azimut = $(".azimut");
 
-    $(".azimut").knob({
+    $azimut.knob({
 		"min":  0,
 		"max": 360,
+		"change": knobRelease,
 		"release": knobRelease
 	});
 
@@ -36,6 +40,16 @@ $(document).ready(function() {
 		console.log("flip");
 	});
 
+	$useCompass.on("click", function(e){
+		e.preventDefault();
+		useCompass = !useCompass;
+		if( $useCompass.hasClass("btn-default") ){
+			$useCompass.removeClass("btn-default").addClass("btn-primary");
+		}else{
+			$useCompass.removeClass("btn-primary").addClass("btn-default");
+		}
+	});
+
 
 	function loadStargates(res){
 		$.getJSON(res, function(data){
@@ -46,7 +60,7 @@ $(document).ready(function() {
 	function getStargatesInAzimut(){
 		$inViewResults.empty();
 		var stargatesInAzimut = [];
-		for(var i=0,l=stargates.length; i<l; i++){
+		for(var i=0,l=stargates.length, found = 0; i<l; i++){
 			var stargate = stargates[i],
 				slat = stargate.lat,
 				slon = stargate.lon,
@@ -60,8 +74,13 @@ $(document).ready(function() {
 			var azimuth = (wicked > 0 ? wicked : (2*Math.PI + wicked)) * 360 / (2*Math.PI);
 
 			if( azimuth + inViewThreshold > currDirection.degrees && azimuth - inViewThreshold < currDirection.degrees ){
-				var $li = $('<li>'+ name +'</li>');
-				$inViewResults.append( $li );
+				if( found == 0 ){
+					found++;
+					var $title = $("<h1>Cities in your view</h1>");
+					$inViewResults.append( $title );
+				}
+				var $button = $('<button class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal">Open "'+ name +'" street view</button>');
+				$inViewResults.append( $button );
 				//console.log( name, azimuth/**/, currDirection.degrees/**/ );
 			}else{
 			}
@@ -97,9 +116,31 @@ $(document).ready(function() {
 
 		function error() {
 			$geolocationLabel.removeClass("label-warning label-danger label-success").addClass("label-danger");
-		};
-
-		
+		};	
 	}
+
+	if (window.DeviceOrientationEvent) {
+		window.addEventListener("deviceorientation", checkDeviceOrientation, true);
+		console.log( "yep" );
+	}else{
+		console.log( "nope" );
+	}
+
+	function checkDeviceOrientation(event){
+		if( event.alpha && useCompass ){
+			console.log( 'compass' );
+			var compassOrientation = 360 - Math.floor(event.alpha);
+
+			if( compassOrientation != Math.floor(currDirection.degrees) ){
+				$azimut.val(compassOrientation).trigger("change");
+				knobRelease( compassOrientation );
+			}
+		}else{
+			console.log( 'no compass' );
+			$useCompass.removeClass("btn-primary").addClass("btn-default");
+			//hide the compass button
+		}
+	}
+
 });
 
