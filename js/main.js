@@ -1,10 +1,16 @@
 var lat = 0,
 	lon = 0,
+	streetViewLat = 0,
+	streetViewLon = 0,
 	precision = 4,
 	currDirection = {},
 	stargates = [],
 	useCompass = false,
 	inViewThreshold = 5;
+
+
+var staticStreetViewString = "http://maps.googleapis.com/maps/api/streetview?location={lat},{lon}&size=200x200&sensor=false&heading={heading}";
+var staticMapString = "http://maps.googleapis.com/maps/api/staticmap?center={lat},{lon}&size=200x200&sensor=false&markers={lat},{lon}";
 
 $(document).ready(function() {
 	var $lat = $("#lat"),
@@ -15,6 +21,9 @@ $(document).ready(function() {
 		$showMap = $("#show-map"),
 		$inViewResults = $("#in-view-results"),
 		$useCompass = $("#use-compass"),
+		$myModal = $("#myModal"),
+		$modalBody = $myModal.find(".modal-body"),
+		$streetViewImage = $("#streetViewImage"),
 		$azimut = $(".azimut");
 
     $azimut.knob({
@@ -50,6 +59,18 @@ $(document).ready(function() {
 		}
 	});
 
+	function showModal(e){
+		var lat = $(this).data('lat');
+		var lon = $(this).data('lon');
+
+		streetViewLat = lat;
+		streetViewLon = lon;
+
+		$streetViewImage.attr("src",generateStaticStreetViewString(lat,lon) );
+
+		$myModal.modal();
+	}
+
 
 	function loadStargates(res){
 		$.getJSON(res, function(data){
@@ -79,13 +100,29 @@ $(document).ready(function() {
 					var $title = $("<h1>Cities in your view</h1>");
 					$inViewResults.append( $title );
 				}
-				var $button = $('<button class="btn btn-default btn-sm" data-toggle="modal" data-target="#myModal">Open "'+ name +'" street view</button>');
+				var $button = $('<button class="btn btn-default btn-sm" data-lat="'+ slat +'" data-lon="'+ slon +'">Open "'+ name +'" street view</button>');
 				$inViewResults.append( $button );
+				$button.on("click", showModal);
 				//console.log( name, azimuth/**/, currDirection.degrees/**/ );
 			}else{
 			}
 		}
 		return stargatesInAzimut
+	}
+
+
+	function generateStaticMapString(lat,lon){
+		var s = staticMapString;
+		s = s.replace(/\{lat\}/g,lat);
+		s = s.replace(/\{lon\}/g,lon);
+		return s;
+	}
+	function generateStaticStreetViewString(lat,lon, heading){
+		var s = staticStreetViewString;
+		s = s.replace(/\{lat\}/g,lat);
+		s = s.replace(/\{lon\}/g,lon);
+		s = s.replace(/\{heading\}/g, heading || 1);
+		return s;
 	}
 
 
@@ -111,7 +148,7 @@ $(document).ready(function() {
 
 			$geolocationLabel.removeClass("label-warning label-danger label-success").addClass("label-success");
 
-			$myLocation.attr("src", "http://maps.googleapis.com/maps/api/staticmap?center=" + latitude + "," + longitude + "&zoom=13&size=300x300&sensor=false");
+			$myLocation.attr("src", generateStaticMapString(lat,lon));
 		};
 
 		function error() {
@@ -126,6 +163,9 @@ $(document).ready(function() {
 		console.log( "nope" );
 	}
 
+
+	var updateStreetViewTimer = 0;
+
 	function checkDeviceOrientation(event){
 		if( event.alpha && useCompass ){
 			console.log( 'compass' );
@@ -134,6 +174,15 @@ $(document).ready(function() {
 			if( compassOrientation != Math.floor(currDirection.degrees) ){
 				$azimut.val(compassOrientation).trigger("change");
 				knobRelease( compassOrientation );
+
+				console.log( compassOrientation );
+
+
+				clearTimeout(updateStreetViewTimer);
+				updateStreetViewTimer = setTimeout(function(){
+					console.log( 'updating streetViewImage' );
+					//$streetViewImage.attr("src",generateStaticStreetViewString(streetViewLat,streetViewLon, compassOrientation) );
+				},500);
 			}
 		}else{
 			console.log( 'no compass' );
