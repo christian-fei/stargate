@@ -1,5 +1,8 @@
 var lat = 0,
-	lon = 0;
+	lon = 0,
+	precision = 4,
+	currDirection = 0,
+	stargates = [];
 
 $(document).ready(function() {
 	var $lat = $("#lat"),
@@ -17,9 +20,13 @@ $(document).ready(function() {
 
 	function knobRelease(v){
 		console.log( v );
+		currDirection = v / (Math.PI*180);
+		console.log( currDirection );
+		getStargatesInAzimut();
 	}
 
 	getCurrentCoordinates();
+	loadStargates("stargates.json");
 
 
 	$showMap.on("click", function(e){
@@ -27,6 +34,31 @@ $(document).ready(function() {
 		$flipper.toggleClass('flip');
 		console.log("flip");
 	});
+
+
+	function loadStargates(res){
+		$.getJSON(res, function(data){
+			stargates = data.stargates;
+		});
+	}
+
+	function getStargatesInAzimut(){
+		var stargatesInAzimut = [];
+		for(var i=0,l=stargates.length; i<l; i++){
+			var stargate = stargates[i],
+				slat = stargate.lat,
+				slon = stargate.lon,
+				name = stargate.name;
+
+			var deltaLat = slat - lat,
+				deltaLon = slon - lon;
+
+			var azimuth = Math.atan2(deltaLon,deltaLat);
+
+			console.log( azimuth, currDirection );
+		}
+		return stargatesInAzimut
+	}
 
 
 	function getCurrentCoordinates() {
@@ -38,6 +70,10 @@ $(document).ready(function() {
 		function success(position) {
 			var latitude  = position.coords.latitude;
 			var longitude = position.coords.longitude;
+
+
+			latitude = parseInt(latitude*Math.pow(10, precision))/Math.pow(10, precision);
+			longitude = parseInt(longitude*Math.pow(10, precision))/Math.pow(10, precision);
 
 			lat = latitude;
 			lon = longitude;

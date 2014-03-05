@@ -13,11 +13,11 @@
 }
 
 
-$size-map: 20em;
+$size-flip: 15em;
 .knob-container{
 	position: relative;
-	height: $size-map;
-	width: $size-map;
+	height: $size-flip + 4em; //because of the "Show map" button
+	width: $size-flip;
 	margin: auto;
 	
 	
@@ -36,8 +36,8 @@ $size-map: 20em;
 
 
 	#flipper > *{
-		height: $size-map;
-		width: $size-map;
+		height: $size-flip;
+		width: $size-flip;
 		position: absolute;
 		top: 0;
 		left: 0;
@@ -52,6 +52,6 @@ $size-map: 20em;
 	}
 
 	img{
-		height: 100%;
+		max-width: 100%;
 	}
 }

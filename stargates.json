@@ -1,0 +1,34 @@
+{
+	"stargates": [
+		{
+			"name": "new york",
+			"lat": 40.757532, 
+			"lon": -73.985673
+		},
+		{
+			"name": "tokyo",
+			"lat": 35.65911, 
+			"lon": 139.745471
+		},
+		{
+			"name": "sydney",
+			"lat": -33.85884, 
+			"lon": 151.213465
+		},
+		{
+			"name": "rio de janeiro",
+			"lat": -22.971024, 
+			"lon": -43.183495
+		},
+		{
+			"name": "cape town",
+			"lat": -33.925045, 
+			"lon": 18.423871
+		},
+		{
+			"name": "copenhagen",
+			"lat": 55.680482, 
+			"lon": 12.589265
+		}
+	]
+}
