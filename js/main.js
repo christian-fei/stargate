@@ -9,8 +9,12 @@ var lat = 0,
 	inViewThreshold = 5;
 
 
-var staticStreetViewString = "http://maps.googleapis.com/maps/api/streetview?location={lat},{lon}&size=200x200&sensor=false&heading={heading}";
-var staticMapString = "http://maps.googleapis.com/maps/api/staticmap?center={lat},{lon}&size=200x200&sensor=false&markers={lat},{lon}";
+var key = "AIzaSyCyNyxdFcc3Zhg245O7sWX9ZHBJPSTtIps",
+	keyString="&key="+key;
+
+keyString="";
+var staticStreetViewString = "http://maps.googleapis.com/maps/api/streetview?location={lat},{lon}&size=200x200&sensor=false&heading={heading}" + keyString;
+var staticMapString = "http://maps.googleapis.com/maps/api/staticmap?center={lat},{lon}&size=200x200&sensor=false&markers={lat},{lon}" + keyString;
 
 $(document).ready(function() {
 	var $lat = $("#lat"),
