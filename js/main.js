@@ -129,7 +129,7 @@ $(document).ready(function() {
 
 			var azimuth = (wicked > 0 ? wicked : (2*Math.PI + wicked)) * 360 / (2*Math.PI);
 
-			if( azimuth + inViewThreshold > currDirection.degrees && azimuth - inViewThreshold < currDirection.degrees ){
+			if( azimuth + inViewThreshold > currDirection.degrees && azimuth - inViewThreshold < currDirection.degrees && streetViewCity != name ){
 				if( found == 0 ){
 					found++;
 					var $title = $("<h1>Cities in your view</h1>");
