@@ -164,29 +164,32 @@ $(document).ready(function() {
 	}
 
 
-	var updateStreetViewTimer = 0;
+	var updateStreetViewTimer = 0,
+		deviceorientationTimer = 0;
 
 	function checkDeviceOrientation(event){
-		if( event.alpha && useCompass ){
-			console.log( 'compass' );
-			var compassOrientation = 360 - Math.floor(event.alpha);
+		clearTimeout(deviceorientationTimer);
+		deviceorientationTimer = setTimeout(function(){
+			if( event.alpha && useCompass ){
+				console.log( 'compass' );
+				var compassOrientation = 360 - Math.floor(event.alpha);
 
-			if( compassOrientation != Math.floor(currDirection.degrees) ){
-				$azimut.val(compassOrientation).trigger("change");
-				knobRelease( compassOrientation );
+				if( compassOrientation != Math.floor(currDirection.degrees) ){
+					$azimut.val(compassOrientation).trigger("change");
+					knobRelease( compassOrientation );
 
-				clearTimeout(updateStreetViewTimer);
-				updateStreetViewTimer = setTimeout(function(){
-					console.log( 'updating streetViewImage' );
-					$streetViewImage.attr("src",generateStaticStreetViewString(streetViewLat,streetViewLon, compassOrientation) );
-				},1000);
+					clearTimeout(updateStreetViewTimer);
+					updateStreetViewTimer = setTimeout(function(){
+						console.log( 'updating streetViewImage' );
+						$streetViewImage.attr("src",generateStaticStreetViewString(streetViewLat,streetViewLon, compassOrientation) );
+					},1000);
+				}
+			}else{
+				console.log( 'no compass' );
+				$useCompass.removeClass("btn-primary").addClass("btn-default");
+				//hide the compass button
 			}
-		}else{
-			console.log( 'no compass' );
-			$useCompass.removeClass("btn-primary").addClass("btn-default");
-			//hide the compass button
-		}
+		},100);
 	}
-
 });
 
