@@ -204,9 +204,9 @@ $(document).ready(function() {
 
 					clearTimeout(updateStreetViewTimer);
 					updateStreetViewTimer = setTimeout(function(){
+					},10);
 						console.log( 'updating streetViewImage' );
 						$streetViewImage.attr("src",generateStaticStreetViewString(streetViewLat,streetViewLon, compassOrientation) );
-					},10);
 				}
 			}else{
 				console.log( 'no compass' );
