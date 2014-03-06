@@ -1,11 +1,13 @@
 var lat = 0,
 	lon = 0,
+	streetViewCity = "",
 	streetViewLat = 0,
 	streetViewLon = 0,
 	precision = 4,
 	currDirection = {},
 	stargates = [],
 	useCompass = false,
+	customLocation = false,
 	inViewThreshold = 5;
 
 var staticStreetViewString = "https://maps.googleapis.com/maps/api/streetview?location={lat},{lon}&size=200x200&sensor=false&heading={heading}";
@@ -37,6 +39,8 @@ $(document).ready(function() {
 		$myModal = $("#myModal"),
 		$modalBody = $myModal.find(".modal-body"),
 		$streetViewImage = $("#streetViewImage"),
+		$navigateHere = $("#navigate-here"),
+		$customLocation = $("#custom-location"),
 		$azimut = $(".azimut");
 
     $azimut.knob({
@@ -72,12 +76,26 @@ $(document).ready(function() {
 		}
 	});
 
+	$navigateHere.on("click", function(e){
+		e.preventDefault();
+		console.log( "setting current lat to streetview lat" );
+		lat = streetViewLat;
+		lon = streetViewLon;
+		$myLocation.attr("src", generateStaticMapString(lat,lon));
+		$lat.html(lat);
+		$lon.html(lon);
+		$customLocation.addClass("label-success").html( streetViewCity );
+		customLocation = true;
+	});
+
 	function showModal(e){
 		var lat = $(this).data('lat');
 		var lon = $(this).data('lon');
+		var city = $(this).data('city');
 
 		streetViewLat = lat;
 		streetViewLon = lon;
+		streetViewCity = city;
 
 		$streetViewImage.attr("src",generateStaticStreetViewString(lat,lon) );
 
@@ -113,7 +131,7 @@ $(document).ready(function() {
 					var $title = $("<h1>Cities in your view</h1>");
 					$inViewResults.append( $title );
 				}
-				var $button = $('<button class="btn btn-default btn-sm" data-lat="'+ slat +'" data-lon="'+ slon +'">Open "'+ name +'" street view</button>');
+				var $button = $('<button class="btn btn-default btn-sm" data-city="'+ name +'"  data-lat="'+ slat +'" data-lon="'+ slon +'">Open "'+ name +'" street view</button>');
 				$inViewResults.append( $button );
 				$button.on("click", showModal);
 				//console.log( name, azimuth/**/, currDirection.degrees/**/ );
@@ -134,21 +152,23 @@ $(document).ready(function() {
 		navigator.geolocation.watchPosition(success, error, {timeout:3000,maximumAge:0,enableHighAccuracy:true});
 
 		function success(position) {
-			var latitude  = position.coords.latitude;
-			var longitude = position.coords.longitude;
+			if( !customLocation ){
+				var latitude  = position.coords.latitude;
+				var longitude = position.coords.longitude;
 
-			latitude = parseInt(latitude*Math.pow(10, precision))/Math.pow(10, precision);
-			longitude = parseInt(longitude*Math.pow(10, precision))/Math.pow(10, precision);
+				latitude = parseInt(latitude*Math.pow(10, precision))/Math.pow(10, precision);
+				longitude = parseInt(longitude*Math.pow(10, precision))/Math.pow(10, precision);
 
-			lat = latitude;
-			lon = longitude;
+				lat = latitude;
+				lon = longitude;
 
-			$lat.html(latitude);
-			$lon.html(longitude);
+				$lat.html(latitude);
+				$lon.html(longitude);
 
-			$geolocationLabel.removeClass("label-warning label-danger label-success").addClass("label-success");
+				$geolocationLabel.removeClass("label-warning label-danger label-success").addClass("label-success");
 
-			$myLocation.attr("src", generateStaticMapString(lat,lon));
+				$myLocation.attr("src", generateStaticMapString(lat,lon));
+			}
 		};
 
 		function error() {
@@ -182,14 +202,14 @@ $(document).ready(function() {
 					updateStreetViewTimer = setTimeout(function(){
 						console.log( 'updating streetViewImage' );
 						$streetViewImage.attr("src",generateStaticStreetViewString(streetViewLat,streetViewLon, compassOrientation) );
-					},1000);
+					},150);
 				}
 			}else{
 				console.log( 'no compass' );
 				$useCompass.removeClass("btn-primary").addClass("btn-default");
 				//hide the compass button
 			}
-		},100);
+		},50);
 	}
 });
 
