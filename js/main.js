@@ -23,7 +23,7 @@ function generateStaticStreetViewString(lat,lon, heading){
 	var s = staticStreetViewString;
 	s = s.replace(/\{lat\}/g,lat);
 	s = s.replace(/\{lon\}/g,lon);
-	s = s.replace(/\{heading\}/g, heading || 1);
+	s = s.replace(/\{heading\}/g, heading || currDirection.degrees);
 	return s;
 }
 
