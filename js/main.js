@@ -84,8 +84,9 @@ $(document).ready(function() {
 		$myLocation.attr("src", generateStaticMapString(lat,lon));
 		$lat.html(lat);
 		$lon.html(lon);
-		$customLocation.addClass("label-success").html( streetViewCity );
+		$customLocation.addClass("label-warning").html( streetViewCity );
 		customLocation = true;
+		$myModal.modal("hide");
 	});
 
 	function showModal(e){
