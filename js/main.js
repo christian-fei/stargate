@@ -12,7 +12,7 @@ var lat = 0,
 var key = "AIzaSyCyNyxdFcc3Zhg245O7sWX9ZHBJPSTtIps",
 	keyString="&key="+key;
 
-keyString="";
+// keyString="";
 var staticStreetViewString = "http://maps.googleapis.com/maps/api/streetview?location={lat},{lon}&size=200x200&sensor=false&heading={heading}" + keyString;
 var staticMapString = "http://maps.googleapis.com/maps/api/staticmap?center={lat},{lon}&size=200x200&sensor=false&markers={lat},{lon}" + keyString;
 
@@ -185,8 +185,8 @@ $(document).ready(function() {
 				clearTimeout(updateStreetViewTimer);
 				updateStreetViewTimer = setTimeout(function(){
 					console.log( 'updating streetViewImage' );
-					//$streetViewImage.attr("src",generateStaticStreetViewString(streetViewLat,streetViewLon, compassOrientation) );
-				},500);
+					$streetViewImage.attr("src",generateStaticStreetViewString(streetViewLat,streetViewLon, compassOrientation) );
+				},1000);
 			}
 		}else{
 			console.log( 'no compass' );
