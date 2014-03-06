@@ -213,7 +213,7 @@ $(document).ready(function() {
 				$useCompass.removeClass("btn-primary").addClass("btn-default");
 				//hide the compass button
 			}
-		},35);
+		},45);
 	}
 });
 
