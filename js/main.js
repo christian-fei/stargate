@@ -44,6 +44,7 @@ $(document).ready(function() {
 		$streetViewImage = $("#streetViewImage"),
 		$navigateHere = $("#navigate-here"),
 		$customLocation = $("#custom-location"),
+		$numberCitiesInView = $("#number-cities-in-view"),
 		$azimut = $(".azimut");
 
     $azimut.knob({
@@ -115,6 +116,7 @@ $(document).ready(function() {
 
 	function getStargatesInAzimut(){
 		$inViewResults.empty();
+		$numberCitiesInView.html("0");
 		var stargatesInAzimut = [];
 		for(var i=0,l=stargates.length, found = 0; i<l; i++){
 			var stargate = stargates[i],
@@ -130,14 +132,16 @@ $(document).ready(function() {
 			var azimuth = (wicked > 0 ? wicked : (2*Math.PI + wicked)) * 360 / (2*Math.PI);
 
 			if( azimuth + inViewThreshold > currDirection.degrees && azimuth - inViewThreshold < currDirection.degrees && streetViewCity != name ){
-				if( found == 0 ){
-					found++;
-					var $title = $("<h1>Cities in your view</h1>");
-					$inViewResults.append( $title );
+				var $li = $('<li data-city="'+ name +'"  data-lat="'+ slat +'" data-lon="'+ slon +'"><a href="#">Open "'+ name +'" street view</a></li>');
+				$inViewResults.append( $li );
+				$li.on("click", showModal);
+
+				var curr = parseInt($numberCitiesInView.html());
+				if( !curr ){
+					curr = 0;
 				}
-				var $button = $('<button class="btn btn-default btn-sm" data-city="'+ name +'"  data-lat="'+ slat +'" data-lon="'+ slon +'">Open "'+ name +'" street view</button>');
-				$inViewResults.append( $button );
-				$button.on("click", showModal);
+				curr++;
+				$numberCitiesInView.html(curr);
 				//console.log( name, azimuth/**/, currDirection.degrees/**/ );
 			}else{
 			}

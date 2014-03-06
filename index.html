@@ -18,6 +18,12 @@
 					<br>
 					<span class="label" id="custom-location"></span>
 				</nav>
+				<div class="btn-group center">
+					<button class="btn btn-default btn-lg dropdown-toggle" type="button" data-toggle="dropdown">
+						<span id="number-cities-in-view" class="badge"></span> Cities in your view <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" role="menu" id="in-view-results"></ul>
+				</div><!-- /btn-group -->
 				<div class="knob-container">
 					<a href="#" class="btn btn-primary" id="show-map">Show map</a>
 					<a href="#" class="btn btn-default" id="use-compass"><span class="icon-compass"></span></a>
@@ -30,7 +36,6 @@
 						</div>
 					</div>
 				</div>
-				<div id="in-view-results"></div>
 
 				<!-- Modal -->
 				<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
