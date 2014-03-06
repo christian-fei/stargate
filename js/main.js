@@ -8,13 +8,22 @@ var lat = 0,
 	useCompass = false,
 	inViewThreshold = 5;
 
+var staticStreetViewString = "https://maps.googleapis.com/maps/api/streetview?location={lat},{lon}&size=200x200&sensor=false&heading={heading}";
+var staticMapString = "https://maps.googleapis.com/maps/api/staticmap?center={lat},{lon}&size=200x200&sensor=false&markers={lat},{lon}";
 
-var key = "AIzaSyCyNyxdFcc3Zhg245O7sWX9ZHBJPSTtIps",
-	keyString="&key="+key;
-
-keyString="";
-var staticStreetViewString = "http://maps.googleapis.com/maps/api/streetview?location={lat},{lon}&size=200x200&sensor=false&heading={heading}" + keyString;
-var staticMapString = "http://maps.googleapis.com/maps/api/staticmap?center={lat},{lon}&size=200x200&sensor=false&markers={lat},{lon}" + keyString;
+function generateStaticMapString(lat,lon){
+	var s = staticMapString;
+	s = s.replace(/\{lat\}/g,lat);
+	s = s.replace(/\{lon\}/g,lon);
+	return s;
+}
+function generateStaticStreetViewString(lat,lon, heading){
+	var s = staticStreetViewString;
+	s = s.replace(/\{lat\}/g,lat);
+	s = s.replace(/\{lon\}/g,lon);
+	s = s.replace(/\{heading\}/g, heading || 1);
+	return s;
+}
 
 $(document).ready(function() {
 	var $lat = $("#lat"),
@@ -115,19 +124,6 @@ $(document).ready(function() {
 	}
 
 
-	function generateStaticMapString(lat,lon){
-		var s = staticMapString;
-		s = s.replace(/\{lat\}/g,lat);
-		s = s.replace(/\{lon\}/g,lon);
-		return s;
-	}
-	function generateStaticStreetViewString(lat,lon, heading){
-		var s = staticStreetViewString;
-		s = s.replace(/\{lat\}/g,lat);
-		s = s.replace(/\{lon\}/g,lon);
-		s = s.replace(/\{heading\}/g, heading || 1);
-		return s;
-	}
 
 
 	function getCurrentCoordinates() {
@@ -178,9 +174,6 @@ $(document).ready(function() {
 			if( compassOrientation != Math.floor(currDirection.degrees) ){
 				$azimut.val(compassOrientation).trigger("change");
 				knobRelease( compassOrientation );
-
-				console.log( compassOrientation );
-
 
 				clearTimeout(updateStreetViewTimer);
 				updateStreetViewTimer = setTimeout(function(){

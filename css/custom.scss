@@ -61,7 +61,7 @@ $size-flip: 15em;
 	.front,.back{
 		backface-visibility: hidden;
 	}
-	.front{
+	.back{
 		transform: rotateY(-180deg);
 		z-index: 2;
 	}
