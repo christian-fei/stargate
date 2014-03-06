@@ -10,8 +10,11 @@ var lat = 0,
 	customLocation = false,
 	inViewThreshold = 5;
 
-var staticStreetViewString = "https://maps.googleapis.com/maps/api/streetview?location={lat},{lon}&size=200x200&sensor=false&heading={heading}";
-var staticMapString = "https://maps.googleapis.com/maps/api/staticmap?center={lat},{lon}&size=200x200&sensor=false&markers={lat},{lon}";
+var key = "AIzaSyCFg8QIYCz0sblX-amDpcBfNfVMkWcEAuE";
+var keyAppend = "&key=" + key;
+
+var staticStreetViewString = "https://maps.googleapis.com/maps/api/streetview?location={lat},{lon}&size=200x200&sensor=false&heading={heading}"+keyAppend;
+var staticMapString = "https://maps.googleapis.com/maps/api/staticmap?center={lat},{lon}&size=200x200&sensor=false&markers={lat},{lon}"+keyAppend;
 
 function generateStaticMapString(lat,lon){
 	var s = staticMapString;
