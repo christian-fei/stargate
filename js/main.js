@@ -202,7 +202,7 @@ $(document).ready(function() {
 					clearTimeout(updateStreetViewTimer);
 					updateStreetViewTimer = setTimeout(function(){
 						console.log( 'updating streetViewImage' );
-						$streetViewImage.attr("src",generateStaticStreetViewString(streetViewLat,streetViewLon, compassOrientation) );
+						//$streetViewImage.attr("src",generateStaticStreetViewString(streetViewLat,streetViewLon, compassOrientation) );
 					},150);
 				}
 			}else{
@@ -210,7 +210,7 @@ $(document).ready(function() {
 				$useCompass.removeClass("btn-primary").addClass("btn-default");
 				//hide the compass button
 			}
-		},30);
+		},40);
 	}
 });
 
